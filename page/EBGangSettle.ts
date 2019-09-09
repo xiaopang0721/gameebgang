@@ -3,7 +3,7 @@
 */
 module gameebgang.page {
     export class EBGangSettle extends game.gui.base.Page {
-        private _viewUI: ui.game_ui.ebgang.JieSuanUI;
+        private _viewUI: ui.nqp.game_ui.ebgang.JieSuanUI;
         private _isGameEnd: boolean = false;  //是否结束
         private _ebgStory: EbgangStory;
         private _ebgMgr: EBGangMgr;

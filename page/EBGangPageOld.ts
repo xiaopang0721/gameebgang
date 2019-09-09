@@ -3,7 +3,7 @@
 */
 module gameebgang.page {
 	export class EBGangPageOld extends game.gui.base.Page {
-		private _viewUI: ui.game_ui.ebgang.EBGang_HUDUI;
+		private _viewUI: ui.nqp.game_ui.ebgang.EBGang_HUDUI;
 		private _player: any;
 		private _playerInfo: any;
 		private _ebgMgr: EBGangMgr;

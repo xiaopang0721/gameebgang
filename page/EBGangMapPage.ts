@@ -37,7 +37,7 @@ module gameebgang.page {
         MAP_STATE_END = 17,	//结束
     }
     export class EBGangMapPage extends game.gui.base.Page {
-        private _viewUI: ui.game_ui.ebgang.EBGangUI;
+        private _viewUI: ui.nqp.game_ui.ebgang.EBGangUI;
         private _mapInfo: EBGangMapInfo;
         private _EBGangMgr: EBGangMgr;
         private _EBGangStory: EBGangStory;
