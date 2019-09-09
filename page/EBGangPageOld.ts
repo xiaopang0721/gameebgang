@@ -40,7 +40,7 @@ module gameebgang.page {
 			super.onOpen();
 
 			this.initPlayerInfo();
-			(this._viewUI.view_hud as TongyongHudPage).onOpen(this._game, EbgangPageDef.GAME_NAME);
+			(this._viewUI.view_hud as TongyongHudNqpPage).onOpen(this._game, EbgangPageDef.GAME_NAME);
 
 			for (let index = 0; index < this._viewUI.box_right.numChildren; index++) {
 				this._viewUI.box_right._childs[index].visible = true;

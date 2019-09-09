@@ -41,7 +41,7 @@ module gameebgang.page {
 			this._viewUI.panel_type.vScrollBar.autoHide = true;
 			this._viewUI.panel_type.vScrollBar.elasticDistance = 100;
 
-			this._viewUI.lab_daxiao.visible = false;
+			// this._viewUI.lab_daxiao.visible = false;
 			this.setTabSelectedIndex();
 		}
 
