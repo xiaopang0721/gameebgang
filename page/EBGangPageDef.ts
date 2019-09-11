@@ -13,11 +13,7 @@ module gameebgang.page {
 		static myinit(str: string) {
 			super.myinit(str);
 			EbgangClip.init();
-			if (WebConfig.baseplatform == PageDef.BASE_PLATFORM_TYPE_NQP) {
-				PageDef._pageClassMap[EbgangPageDef.PAGE_EBG] = EBGangPage;
-			} else {
-				PageDef._pageClassMap[EbgangPageDef.PAGE_EBG] = EBGangPageOld;
-			}
+			PageDef._pageClassMap[EbgangPageDef.PAGE_EBG] = EBGangPage;
 			PageDef._pageClassMap[EbgangPageDef.PAGE_EBG_MAP] = EBGangMapPage;
 			PageDef._pageClassMap[EbgangPageDef.PAGE_EBG_RULE] = EBGangRulePage;
 			PageDef._pageClassMap[EbgangPageDef.PAGE_EBG_BEGIN] = EBGangBeginPage;
