@@ -112,12 +112,12 @@ module gameebgang.page {
             this.lab_money.text = this._data.money;
             // this.lab_bankermultiple.text = this._data.isbanker ? this._data.bankermultiple : "0";
             // this.lab_cardtype.text = this._data.cardtype;
-            this.lab_name.color = this._data.isMain ? "#cc90ff" : "#ffffff";
-            this.lab_point.color = this._data.isMain ? "#cc90ff" : "#ffffff";
-            this.lab_multiple.color = this._data.isMain ? "#cc90ff" : "#ffffff";
-            this.lab_money.color = parseFloat(this._data.money) >= 0 ? "#069e00" : "#ff0000";
-            // this.lab_bankermultiple.color = this._data.isMain ? "#cc90ff" : "#ffffff";
-            // this.lab_cardtype.color = this._data.isMain ? "#cc90ff" : "#ffffff";
+            this.lab_name.color = this._data.isMain ? TeaStyle.COLOR_JIESUAN : "#ffffff";
+            this.lab_point.color = this._data.isMain ? TeaStyle.COLOR_JIESUAN : "#ffffff";
+            this.lab_multiple.color = this._data.isMain ? TeaStyle.COLOR_JIESUAN : "#ffffff";
+            this.lab_money.color = parseFloat(this._data.money) >= 0 ? TeaStyle.COLOR_JIESUAN : TeaStyle.COLOR_RED;
+            // this.lab_bankermultiple.color = this._data.isMain ? TeaStyle.COLOR_JIESUAN : "#ffffff";
+            // this.lab_cardtype.color = this._data.isMain ? TeaStyle.COLOR_JIESUAN : "#ffffff";
         }
 
         destroy() {
