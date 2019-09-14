@@ -17,6 +17,8 @@ module gameebgang {
         public static HUD_FONT2: any;
         //底分数字富豪
         public static HUD_FONT3: any;
+        //倍数文字
+        public static BEI_FONT: any;
 
         static init(): void {
             this.MONEY_FONT2 = {
@@ -86,6 +88,16 @@ module gameebgang {
                 clipHeight: 27,
                 clipX: 10,
                 space: -5
+            };
+
+            //倍数
+            this.BEI_FONT = {
+                source: PathGameTongyong.atlas_game_ui_tongyong + "general.atlas",
+                url: PathGameTongyong.ui_tongyong_general + 'clip_bs.png',
+                clipWidth: 32,
+                clipHeight: 41,
+                clipX: 10,
+                space: -18
             };
         }
         private _clip: ClipCell;

@@ -107,6 +107,7 @@ module gameebgang.page {
         // 页面打开时执行函数
         protected onOpen(): void {
             super.onOpen();
+            this.initBeiClip();
             this.updateViewUI();
             this.onUpdateUnitOffline();
             this.resetData();
@@ -151,6 +152,51 @@ module gameebgang.page {
             this._viewUI.btn_continue.on(LEvent.CLICK, this, this.onBtnClickWithTween);
             for (let i = 1; i < 6; i++) {
                 this._viewUI["btn_bet" + i] && this._viewUI["btn_bet" + i].on(LEvent.CLICK, this, this.onBet, [i]);
+            }
+        }
+
+        //倍数
+        private _beiClip1: ClipUtil;
+        private _beiClip2: ClipUtil;
+        private _beiClip3: ClipUtil;
+        private _beiClip4: ClipUtil;
+        private _beiClip5: ClipUtil;
+        //抢庄倍数
+        private _bankerClip1: ClipUtil;
+        private _bankerClip2: ClipUtil;
+        private _bankerClip3: ClipUtil;
+        private _bankerClip4: ClipUtil;
+        initBeiClip(): void {
+            for (let i = 1; i < 6; i++) {
+                this["_beiClip" + i] = new ClipUtil(ClipUtil.BEI_FONT);
+                this["_beiClip" + i].centerX = this._viewUI["clip_bei" + i].centerX;
+                this["_beiClip" + i].centerY = this._viewUI["clip_bei" + i].centerY;
+                this._viewUI["clip_bei" + i].parent.addChild(this["_beiClip" + i]);
+                this._viewUI["clip_bei" + i].visible = false;
+            }
+            for (let i = 1; i < 5; i++) {
+                this["_bankerClip" + i] = new ClipUtil(ClipUtil.BEI_FONT);
+                this["_bankerClip" + i].centerX = this._viewUI["clip_banker" + i].centerX;
+                this["_bankerClip" + i].centerY = this._viewUI["clip_banker" + i].centerY;
+                this._viewUI["clip_banker" + i].parent.addChild(this["_bankerClip" + i]);
+                this._viewUI["clip_banker" + i].visible = false;
+            }
+        }
+
+        clearBeiClip(): void {
+            for (let i = 1; i < 6; i++) {
+                if (this["_beiClip" + i]) {
+                    this["_beiClip" + i].removeSelf();
+                    this["_beiClip" + i].destroy();
+                    this["_beiClip" + i] = null;
+                }
+            }
+            for (let i = 1; i < 5; i++) {
+                if (this["_bankerClip" + i]) {
+                    this["_bankerClip" + i].removeSelf();
+                    this["_bankerClip" + i].destroy();
+                    this["_bankerClip" + i] = null;
+                }
             }
         }
 
@@ -544,26 +590,30 @@ module gameebgang.page {
             if (this._viewUI.box_banker.visible) {
                 this.resetBankerButton(false);
                 this._viewUI.txt_tip.text = "请选择本局能承受的最大赔付倍数进行抢庄!";
-                let bankLableText: string = "倍抢庄";
+                // let bankLableText: string = "倍抢庄";
                 this._bankerRate = BANKER_RATE_DEFAULT;
                 this._viewUI.box_tip.visible = true;
                 let _max_banker_num: number = this.getMaxBankerNumByUnit(this._game.sceneObjectMgr.mainUnit);
                 this._viewUI.btn_banker1.visible = _max_banker_num >= EBGangMgr.MIN_BANKER_NUM;
+                this._bankerClip1.setText("1", true);
                 if (this._viewUI.btn_banker1.visible) {
                     let _banker2_num: number = Math.floor(_max_banker_num / 3)
                     this._viewUI.btn_banker2.visible = _banker2_num > EBGangMgr.MIN_BANKER_NUM;
                     if (this._viewUI.btn_banker2.visible) {
                         this._bankerRate[2] = _banker2_num;
-                        this._viewUI.btn_banker2.label = _banker2_num.toString() + bankLableText;
+                        // this._viewUI.btn_banker2.label = _banker2_num.toString() + bankLableText;
+                        this._bankerClip2.setText(_banker2_num.toString(), true);
                         let _banker3_num: number = Math.floor(_max_banker_num * 2 / 3)
                         this._viewUI.btn_banker3.visible = _banker3_num > _banker2_num;
                         if (this._viewUI.btn_banker3.visible) {
                             this._bankerRate[3] = _banker3_num;
-                            this._viewUI.btn_banker3.label = _banker3_num.toString() + bankLableText;
+                            // this._viewUI.btn_banker3.label = _banker3_num.toString() + bankLableText;
+                            this._bankerClip3.setText(_banker3_num.toString(), true);
                             this._viewUI.btn_banker4.visible = _max_banker_num > _banker3_num;
                             if (this._viewUI.btn_banker4.visible) {
                                 this._bankerRate[4] = _max_banker_num;
-                                this._viewUI.btn_banker4.label = _max_banker_num.toString() + bankLableText;
+                                // this._viewUI.btn_banker4.label = _max_banker_num.toString() + bankLableText;
+                                this._bankerClip4.setText(_max_banker_num.toString(), true);
                             }
                         }
                     }
@@ -592,22 +642,25 @@ module gameebgang.page {
                     this._viewUI.btn_bet1.visible = true;
                     if (this._viewUI.btn_bet1.visible) {
                         this._betRate[0] = 1;
-                        let str_bet: string = "注";
-                        this._viewUI.btn_bet1.label = this._betRate[0].toString() + str_bet;
+                        // let str_bet: string = "注";
+                        // this._viewUI.btn_bet1.label = this._betRate[0].toString() + str_bet;
+                        this._beiClip1.setText(this._betRate[0].toString(), true);
                         let _bet_num2: number = Math.floor(_self_max_bet_num / 4);
                         if (_bet_num2 < 2) _bet_num2 = 2;
                         this._viewUI.btn_bet2.visible = _bet_num2 <= _self_max_bet_num;
                         if (this._viewUI.btn_bet2.visible) {
                             this._viewUI.btn_bet1.left = 180;
                             this._viewUI.btn_bet2.left = this._viewUI.btn_bet1.left + this._viewUI.btn_bet1.width + 20;
-                            this._viewUI.btn_bet2.label = _bet_num2 + str_bet;
+                            // this._viewUI.btn_bet2.label = _bet_num2 + str_bet;
+                            this._beiClip2.setText(_bet_num2.toString(), true);
                             this._betRate[1] = _bet_num2;
                             let _bet_num3: number = Math.floor(_self_max_bet_num / 2);
                             if (_bet_num3 < 3) _bet_num3 = 3;
                             this._viewUI.btn_bet3.visible = _bet_num3 <= _self_max_bet_num && _bet_num3 > _bet_num2;
                             if (this._viewUI.btn_bet3.visible) {
                                 this._viewUI.btn_bet3.left = this._viewUI.btn_bet2.left + this._viewUI.btn_bet2.width + 20;;
-                                this._viewUI.btn_bet3.label = _bet_num3 + str_bet;
+                                // this._viewUI.btn_bet3.label = _bet_num3 + str_bet;
+                                this._beiClip3.setText(_bet_num3.toString(), true);
                                 this._betRate[2] = _bet_num3;
                                 let _bet_num4: number = Math.floor(_self_max_bet_num * (3 / 4));
                                 if (_bet_num4 < 4) _bet_num4 = 4;
@@ -615,11 +668,13 @@ module gameebgang.page {
                                 if (this._viewUI.btn_bet4.visible) {
                                     this.resetBetButtonX(true);
                                     this._viewUI.btn_bet5.visible = _bet_num4 < _self_max_bet_num;
-                                    this._viewUI.btn_bet4.label = _bet_num4 + str_bet;
+                                    // this._viewUI.btn_bet4.label = _bet_num4 + str_bet;
+                                    this._beiClip4.setText(_bet_num4.toString(), true);
                                     this._betRate[3] = _bet_num4;
                                     if (this._viewUI.btn_bet5.visible) {
                                         this.resetBetButtonX(true);
-                                        this._viewUI.btn_bet5.label = _self_max_bet_num + str_bet;
+                                        // this._viewUI.btn_bet5.label = _self_max_bet_num + str_bet;
+                                        this._beiClip5.setText(_self_max_bet_num.toString(), true);
                                         this._betRate[4] = _self_max_bet_num;
                                     }
                                 }
@@ -1596,6 +1651,7 @@ module gameebgang.page {
                 this._mapInfo = null;
                 this._game.stopMusic();
                 this._game.stopAllSound();
+                this.clearBeiClip();
             }
             super.close();
         }
