@@ -33,15 +33,11 @@ module gameebgang.page {
 			this._viewUI.lab_settle.skin = Path_game_ebgang.ui_ebgang + "guize_3.png";
 			this._viewUI.btn_tab.selectHandler = Handler.create(this, this.selectHandler, null, false);
 			this._viewUI.btn_tab.selectedIndex = TYPE_INDEX.TYPE_WANFA_JIESHAO;
-			this._viewUI.panel_rule.vScrollBarSkin = "";
-			this._viewUI.panel_rule.vScrollBar.autoHide = true;
-			this._viewUI.panel_rule.vScrollBar.elasticDistance = 100;
 
 			this._viewUI.panel_type.vScrollBarSkin = "";
 			this._viewUI.panel_type.vScrollBar.autoHide = true;
 			this._viewUI.panel_type.vScrollBar.elasticDistance = 100;
 
-			// this._viewUI.lab_daxiao.visible = false;
 			this.setTabSelectedIndex();
 		}
 
