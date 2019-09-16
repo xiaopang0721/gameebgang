@@ -102,7 +102,8 @@ module gameebgang.page {
                 this._EBGangMgr.on(EBGangMgr.CONTINUE_GAME, this, this.onClickContinueGame);
             }
             this._game.playMusic(Path_game_ebgang.music_ebgang + MUSIC_PATH.musicBGM);
-            this._viewUI.btn_menu.left = this._game.isFullScreen ? 25 : 10;
+            this._viewUI.btn_menu.left = this._game.isFullScreen ? 30 : 10;
+            this._viewUI.img_menu.left = this._game.isFullScreen ? 25 : 10;
         }
 
         // 页面打开时执行函数
