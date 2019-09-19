@@ -657,15 +657,15 @@ module gameebgang.page {
                         if (_bet_num2 < 2) _bet_num2 = 2;
                         this._viewUI.btn_bet2.visible = _bet_num2 <= _self_max_bet_num;
                         if (this._viewUI.btn_bet2.visible) {
-                            this._viewUI.btn_bet1.left = 180;
-                            this._viewUI.btn_bet2.left = this._viewUI.btn_bet1.left + this._viewUI.btn_bet1.width + 20;
+                            this._viewUI.btn_bet1.left = 150;
+                            this._viewUI.btn_bet2.left = this._viewUI.btn_bet1.left + this._viewUI.btn_bet1.width + 10;
                             this._beiClip2.setText(_bet_num2.toString(), true);
                             this._betRate[1] = _bet_num2;
                             let _bet_num3: number = Math.floor(_self_max_bet_num / 2);
                             if (_bet_num3 < 3) _bet_num3 = 3;
                             this._viewUI.btn_bet3.visible = _bet_num3 <= _self_max_bet_num && _bet_num3 > _bet_num2;
                             if (this._viewUI.btn_bet3.visible) {
-                                this._viewUI.btn_bet3.left = this._viewUI.btn_bet2.left + this._viewUI.btn_bet2.width + 20;;
+                                this._viewUI.btn_bet3.left = this._viewUI.btn_bet2.left + this._viewUI.btn_bet2.width + 10;
                                 this._beiClip3.setText(_bet_num3.toString(), true);
                                 this._betRate[2] = _bet_num3;
                                 let _bet_num4: number = Math.floor(_self_max_bet_num * (3 / 4));
