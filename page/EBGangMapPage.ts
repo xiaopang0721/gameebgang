@@ -338,12 +338,9 @@ module gameebgang.page {
         // 重置 下注按纽的坐标
         private resetBetButtonX(isVisible: boolean) {
             this._viewUI.btn_bet1.visible = isVisible;
-            this._viewUI.btn_bet1.x = 0;
-            this._viewUI.btn_bet1.left = 0;
             let _width: number = this._viewUI.btn_bet1.width;
             for (let i = 2; i <= 5; i++) {
                 this._viewUI["btn_bet" + i].visible = isVisible;
-                this._viewUI["btn_bet" + i].left = this._viewUI["btn_bet" + (i - 1)].left + _width + 20;
             }
         }
 
@@ -540,7 +537,7 @@ module gameebgang.page {
             for (let i = 0; i < 4; i++) {
                 this._viewUI["view_head" + i].view_banker.visible = i == posIdx;
             }
-            if (this._randCount >= 2000) {
+            if (this._randCount >= 10) {
                 // 看精灵的庄家下标是否发生了变化
                 for (let i = 1; i < 5; i++) {
                     let unit = this._game.sceneObjectMgr.getUnitByIdx(i);
@@ -648,7 +645,6 @@ module gameebgang.page {
                 // 下注按钮的倍数显示 
                 let _self_max_bet_num: number = this.getMaxBetNumByUnit(mainUnit);
                 if (_self_max_bet_num >= 1) {
-                    this._viewUI.btn_bet1.left = 350;
                     this._viewUI.btn_bet1.visible = true;
                     if (this._viewUI.btn_bet1.visible) {
                         this._betRate[0] = 1;
@@ -657,15 +653,12 @@ module gameebgang.page {
                         if (_bet_num2 < 2) _bet_num2 = 2;
                         this._viewUI.btn_bet2.visible = _bet_num2 <= _self_max_bet_num;
                         if (this._viewUI.btn_bet2.visible) {
-                            this._viewUI.btn_bet1.left = 150;
-                            this._viewUI.btn_bet2.left = this._viewUI.btn_bet1.left + this._viewUI.btn_bet1.width + 10;
                             this._beiClip2.setText(_bet_num2.toString(), true);
                             this._betRate[1] = _bet_num2;
                             let _bet_num3: number = Math.floor(_self_max_bet_num / 2);
                             if (_bet_num3 < 3) _bet_num3 = 3;
                             this._viewUI.btn_bet3.visible = _bet_num3 <= _self_max_bet_num && _bet_num3 > _bet_num2;
                             if (this._viewUI.btn_bet3.visible) {
-                                this._viewUI.btn_bet3.left = this._viewUI.btn_bet2.left + this._viewUI.btn_bet2.width + 10;
                                 this._beiClip3.setText(_bet_num3.toString(), true);
                                 this._betRate[2] = _bet_num3;
                                 let _bet_num4: number = Math.floor(_self_max_bet_num * (3 / 4));
