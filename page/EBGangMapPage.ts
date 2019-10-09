@@ -80,7 +80,7 @@ module gameebgang.page {
                 PathGameTongyong.atlas_game_ui_tongyong + "touxiang.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "jiaru.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "pai.atlas",
-                PathGameTongyong.atlas_game_ui_tongyong + "qifu.atlas",
+                DatingPath.atlas_dating_ui + "qifu.atlas",
                 Path_game_ebgang.atlas_game_ui + "ebgang/effect/yanhua.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "general/effect/shaizi.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "dating.atlas",
