@@ -13,8 +13,8 @@ module gameebgang.page {
         musicRandBanker: "dingzhuang.mp3",
         musicBanker: "suijizhuangjia.mp3",
         musicStart: "start.mp3",
-        loseMusic: "tongyong/lose",
-        winMusic: "tongyong/win",
+        loseMusic: "lose",
+        winMusic: "win",
     }
     const enum MAP_STATUS {
         MAP_STATE_NONE = 0, 	//初始化
@@ -420,10 +420,11 @@ module gameebgang.page {
                                 viewHead.img_qifu.visible = true;
                                 viewHead.img_icon.skin = TongyongUtil.getHeadUrl(unit.GetHeadImg(), 2);
                             })
-                        } else {
-                            viewHead.img_qifu.visible = true;
-                            viewHead.img_icon.skin = TongyongUtil.getHeadUrl(unit.GetHeadImg(), 2);
-                        }
+                        } 
+                        // else {
+                        //     viewHead.img_qifu.visible = true;
+                        //     viewHead.img_icon.skin = TongyongUtil.getHeadUrl(unit.GetHeadImg(), 2);
+                        // }
                     } else {
                         viewHead.img_qifu.visible = false;
                         viewHead.img_icon.skin = TongyongUtil.getHeadUrl(unit.GetHeadImg(), 2);
