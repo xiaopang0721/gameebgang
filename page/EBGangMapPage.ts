@@ -80,6 +80,7 @@ module gameebgang.page {
                 PathGameTongyong.atlas_game_ui_tongyong + "touxiang.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "jiaru.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "pai.atlas",
+                PathGameTongyong.atlas_game_ui_tongyong + "qz.atlas",
                 DatingPath.atlas_dating_ui + "qifu.atlas",
                 Path_game_ebgang.atlas_game_ui + "ebgang/effect/yanhua.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "general/effect/shaizi.atlas",
@@ -402,7 +403,7 @@ module gameebgang.page {
                     // this.GetDoubleFloat(unit.GetMoney());
                     //头像框
                     viewHead.img_txk.skin = TongyongUtil.getTouXiangKuangUrl(unit.GetHeadKuangImg());
-                    viewHead.img_vip.visible = mainUnit.GetVipLevel() > 0;
+                    viewHead.img_vip.visible = unit.GetVipLevel() > 0;
                     viewHead.img_vip.skin = TongyongUtil.getVipUrl(unit.GetVipLevel());
                     //祈福成功 头像上就有动画
                     if (qifu_index && posIdx == qifu_index) {
