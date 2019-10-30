@@ -1398,11 +1398,14 @@ module gameebgang.page {
             let chip = this._game.sceneObjectMgr.createOfflineObject(SceneRoot.CHIP_MARK, EBGangChip) as EBGangChip;
             chip.setData(startIdx, targetIdx, type, value, index, unitIndex);
             this._chips[startIdx].push(chip);
+            chip.visible = false;
             if (this._EBGangStory.isReConnected && (this._currState > MAP_STATUS.MAP_STATE_BET && this._currState < MAP_STATUS.MAP_STATE_END)) {
+                chip.visible = true;
                 chip.drawChip();
             }
             else {
                 Laya.timer.once(350, this, () => {
+                    chip.visible = true;
                     chip.sendChip();
                     this._game.playSound(Path_game_ebgang.music_ebgang + "chouma.mp3", false);
                 })
