@@ -61,7 +61,7 @@ module gameebgang.story {
 			if (!info) return;
 			this.onMapInfoChange();
 			this._game.uiRoot.closeAll();
-			this._game.uiRoot.general.open(EBGPageDef.PAGE_EBG_MAP);
+			this._game.uiRoot.HUD.open(EBGPageDef.PAGE_EBG_MAP);
 		}
 
 		enterMap() {
