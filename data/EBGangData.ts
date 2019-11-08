@@ -19,11 +19,11 @@ module gameebgang.data {
 			this._card_val = this._val % 10;
 			if (this._card_val == 0) this._card_val = 10;
 			this._card_color = Math.floor(this._val / 10);
-        }
+		}
 
 		fapai() {
 			let idx = this._ownerIdx;
-			let posIdx = (idx - this._mainPlayerIndex + 4) % 4; 
+			let posIdx = (idx - this._mainPlayerIndex + 4) % 4;
 			let posX = this._posTemp[posIdx][0];
 			let posY = this._posTemp[posIdx][1];
 			let space = this._posTemp[posIdx][2];
@@ -37,7 +37,10 @@ module gameebgang.data {
 				logd("EBGang DATA fapai fail...this pos is nil");
 				return
 			}
-			Laya.Tween.to(this.pos, { x: this.targe_pos.x, y: this.targe_pos.y }, this.time_interval);
+			this.isUIShow = true;
+			Laya.Tween.to(this.pos, { x: this.targe_pos.x, y: this.targe_pos.y }, this.time_interval, null, Handler.create(this, () => {
+				this.isUIShow = false;
+			}));
 		}
 
 		//重连发牌

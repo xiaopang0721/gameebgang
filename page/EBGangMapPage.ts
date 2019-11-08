@@ -80,6 +80,7 @@ module gameebgang.page {
                 PathGameTongyong.atlas_game_ui_tongyong + "touxiang.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "jiaru.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "pai.atlas",
+                PathGameTongyong.atlas_game_ui_tongyong + "qz.atlas",
                 DatingPath.atlas_dating_ui + "qifu.atlas",
                 Path_game_ebgang.atlas_game_ui + "ebgang/effect/yanhua.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "general/effect/shaizi.atlas",
@@ -405,7 +406,7 @@ module gameebgang.page {
                     // this.GetDoubleFloat(unit.GetMoney());
                     //头像框
                     viewHead.img_txk.skin = TongyongUtil.getTouXiangKuangUrl(unit.GetHeadKuangImg());
-                    viewHead.img_vip.visible = mainUnit.GetVipLevel() > 0;
+                    viewHead.img_vip.visible = unit.GetVipLevel() > 0;
                     viewHead.img_vip.skin = TongyongUtil.getVipUrl(unit.GetVipLevel());
                     //祈福成功 头像上就有动画
                     if (qifu_index && posIdx == qifu_index) {
@@ -1401,11 +1402,14 @@ module gameebgang.page {
             let chip = this._game.sceneObjectMgr.createOfflineObject(SceneRoot.CHIP_MARK, EBGangChip) as EBGangChip;
             chip.setData(startIdx, targetIdx, type, value, index, unitIndex);
             this._chips[startIdx].push(chip);
+            chip.visible = false;
             if (this._EBGangStory.isReConnected && (this._currState > MAP_STATUS.MAP_STATE_BET && this._currState < MAP_STATUS.MAP_STATE_END)) {
+                chip.visible = true;
                 chip.drawChip();
             }
             else {
                 Laya.timer.once(350, this, () => {
+                    chip.visible = true;
                     chip.sendChip();
                     this._game.playSound(Path_game_ebgang.music_ebgang + "chouma.mp3", false);
                 })
