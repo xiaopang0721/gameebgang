@@ -69,17 +69,20 @@ module gameebgang.page {
 				this._viewUI.box_right._childs[index].visible = true;
 				Laya.Tween.from(this._viewUI.box_right._childs[index], {
 					right: -300
-				}, 200 + index * 100, Laya.Ease.linearNone);
+				}, this._initialtime + index * this._time, Laya.Ease.linearNone);
 			}
+			Laya.timer.once(this._initialtime + 4 * this._time, this, this.onComplete)
+			this._viewUI.btn_join.on(LEvent.CLICK, this, this.onBtnClickWithTween);
+		}
 
+		private _initialtime: number = 200;
+		private _time: number = 100;
+		private onComplete() {
 			this._viewUI.img_room0.on(LEvent.CLICK, this, this.onBtnClickWithTween);
 			this._viewUI.img_room1.on(LEvent.CLICK, this, this.onBtnClickWithTween);
 			this._viewUI.img_room2.on(LEvent.CLICK, this, this.onBtnClickWithTween);
 			this._viewUI.img_room3.on(LEvent.CLICK, this, this.onBtnClickWithTween);
-			this._viewUI.btn_join.on(LEvent.CLICK, this, this.onBtnClickWithTween);
 		}
-
-
 
 		protected onBtnTweenEnd(e: LEvent, target: any): void {
 			if (!this._player) return;
@@ -118,7 +121,7 @@ module gameebgang.page {
 			this._game.alert(StringU.substitute("老板，您的金币少于{0}哦~\n补充点金币去大杀四方吧~", limit), () => {
 				this._game.uiRoot.general.open(DatingPageDef.PAGE_CHONGZHI);
 			}, () => {
-			}, true,Tips.TIPS_SKIN_STR["cz"]);
+			}, true, Tips.TIPS_SKIN_STR["cz"]);
 		}
 
 		private initPlayerInfo(): void {
