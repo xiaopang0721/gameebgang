@@ -562,7 +562,7 @@ module gameebgang.page {
                     }
                 }
             }
-            this._randCount += this._diff_ran;
+            this._randCount ++;
             if (this._bankerTemp.length > 1) {
                 this._game.playSound(Path_game_ebgang.music_ebgang + MUSIC_PATH.musicRandBanker, false);
             }
