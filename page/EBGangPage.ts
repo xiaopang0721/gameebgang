@@ -126,10 +126,10 @@ module gameebgang.page {
 
 		private initPlayerInfo(): void {
 			for (let index = 0; index < this._difenClipList.length; index++) {
-				this._difenClipList[index].setText(EBGangMgr.LEAST_BET_MONEY[index], true);
+				this._difenClipList[index] && this._difenClipList[index].setText(EBGangMgr.LEAST_BET_MONEY[index], true);
 			}
 			for (let index = 0; index < this._leastClipList.length; index++) {
-				this._leastClipList[index].setText(EBGangMgr.LEAST_JOIN_MONEY[index], true);
+				this._leastClipList[index] && this._leastClipList[index].setText(EBGangMgr.LEAST_JOIN_MONEY[index], true);
 			}
 		}
 
