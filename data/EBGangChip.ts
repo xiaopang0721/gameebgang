@@ -40,23 +40,6 @@ module gameebgang.data {
 			super.sendChip();
 		}
 
-		flyChip(index: number, isBanker: boolean, count: number) {
-			if (!this.pos) {
-				this.pos = new Vector2(this._chipStart[this._startIndex][0], this._chipStart[this._startIndex][1]);
-			}
-			if (!this.targe_pos) {
-				this.targe_pos = new Vector2();
-			}
-			this.isFinalPos = false;
-			let target = isBanker ? this._chipEnd : this._chipStart;
-			this.targe_pos.x = target[index][0];
-			this.targe_pos.y = target[index][1];
-			if(!this.pos) return;
-			Laya.Tween.to(this.pos, { x: this.targe_pos.x, y: this.targe_pos.y }, 500 + count * 15, Laya.Ease.backIn, Handler.create(this, () => {
-				this.isFinalPos = true;
-			}));
-		}
-
 		backFlyChip(index: number, isClear: boolean) {
 			if (!this.pos) {
 				this.pos = new Vector2(this._chipStart[this._startIndex][0], this._chipStart[this._startIndex][1]);
@@ -64,12 +47,14 @@ module gameebgang.data {
 			if (!this.targe_pos) {
 				this.targe_pos = new Vector2();
 			}
+			this.isUIShow = true;
 			this.isFinalPos = false;
 			this.targe_pos.x = this._chipStart[index][0];
 			this.targe_pos.y = this._chipStart[index][1];
 			this.isCanClear = isClear;
 			if(!this.pos) return;
 			Laya.Tween.to(this.pos, { x: this.targe_pos.x, y: this.targe_pos.y }, 700, Laya.Ease.backIn, Handler.create(this, () => {
+				this.isUIShow = false;
 				this.isFinalPos = true;
 			}));
 		}
