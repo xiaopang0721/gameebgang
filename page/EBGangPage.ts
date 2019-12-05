@@ -63,7 +63,7 @@ module gameebgang.page {
 			super.onOpen();
 
 			this.initPlayerInfo();
-			(this._viewUI.view_hud as TongyongHudNqpPage).onOpen(this._game, EbgangPageDef.GAME_NAME);
+			(this._viewUI.view_hud as TongyongHudNqpPage).onOpen(this._game, EbgangPageDef.GAME_NAME, false);
 
 			for (let index = 0; index < this._viewUI.box_right.numChildren; index++) {
 				this._viewUI.box_right._childs[index].visible = true;
@@ -104,14 +104,14 @@ module gameebgang.page {
 					if (this.chkPlayerNotEnoughMoney(3)) return;
 					this._game.sceneObjectMgr.intoStory(EbgangPageDef.GAME_NAME, Web_operation_fields.GAME_ROOM_CONFIG_EBGANG_4.toString());
 					break;
-				case this._viewUI.btn_join:
-					let maplv = TongyongUtil.getJoinMapLv(EbgangPageDef.GAME_NAME, this._playerInfo.money);
-					if (!maplv) {
-						this.showTipsBox(EBGangMgr.LEAST_JOIN_MONEY[0]);
-						return;
-					}
-					this._game.sceneObjectMgr.intoStory(EbgangPageDef.GAME_NAME, maplv.toString());
-					break;
+				// case this._viewUI.btn_join:
+				// 	let maplv = TongyongUtil.getJoinMapLv(EbgangPageDef.GAME_NAME, this._playerInfo.money);
+				// 	if (!maplv) {
+				// 		this.showTipsBox(EBGangMgr.LEAST_JOIN_MONEY[0]);
+				// 		return;
+				// 	}
+				// 	this._game.sceneObjectMgr.intoStory(EbgangPageDef.GAME_NAME, maplv.toString());
+				// 	break;
 				default:
 					break;
 			}
