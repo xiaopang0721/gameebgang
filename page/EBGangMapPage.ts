@@ -74,6 +74,7 @@ module gameebgang.page {
             super(v, onOpenFunc, onCloseFunc);
             this._isNeedDuang = false;
             this._asset = [
+                DatingPath.atlas_dating_ui + "qifu.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "hud.atlas",
                 Path_game_ebgang.atlas_game_ui + "ebgang.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "general.atlas",
@@ -81,7 +82,7 @@ module gameebgang.page {
                 PathGameTongyong.atlas_game_ui_tongyong + "jiaru.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "pai.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "qz.atlas",
-                DatingPath.atlas_dating_ui + "qifu.atlas",
+                PathGameTongyong.atlas_game_ui_tongyong + "qifu.atlas",
                 Path_game_ebgang.atlas_game_ui + "ebgang/effect/yanhua.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "general/effect/shaizi.atlas",
                 PathGameTongyong.atlas_game_ui_tongyong + "dating.atlas",

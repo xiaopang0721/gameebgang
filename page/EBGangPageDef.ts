@@ -21,6 +21,7 @@ module gameebgang.page {
 
 
 			this["__needLoadAsset"] = [
+				DatingPath.atlas_dating_ui + "qifu.atlas",
 				PathGameTongyong.atlas_game_ui_tongyong + "hud.atlas",
 				Path_game_ebgang.atlas_game_ui + "ebgang.atlas",
 				PathGameTongyong.atlas_game_ui_tongyong + "general.atlas",
@@ -28,7 +29,7 @@ module gameebgang.page {
 				PathGameTongyong.atlas_game_ui_tongyong + "jiaru.atlas",
 				PathGameTongyong.atlas_game_ui_tongyong + "pai.atlas",
 				PathGameTongyong.atlas_game_ui_tongyong + "qz.atlas",
-				DatingPath.atlas_dating_ui + "qifu.atlas",
+				PathGameTongyong.atlas_game_ui_tongyong + "qifu.atlas",
 				Path_game_ebgang.atlas_game_ui + "ebgang/effect/yanhua.atlas",
 				PathGameTongyong.atlas_game_ui_tongyong + "general/effect/shaizi.atlas",
 				PathGameTongyong.atlas_game_ui_tongyong + "general/effect/hulu.atlas",
