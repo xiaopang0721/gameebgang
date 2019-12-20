@@ -8,7 +8,7 @@ module gameebgang.page {
 		TYPE_SETTLE = 2,
 	}
 	export class EBGangRulePage extends game.gui.base.Page {
-		private _viewUI: ui.nqp.game_ui.ebgang.EBGang_GuiZeUI;
+		private _viewUI: ui.ajqp.game_ui.ebgang.EBGang_GuiZeUI;
 
 		constructor(v: Game, onOpenFunc?: Function, onCloseFunc?: Function) {
 			super(v, onOpenFunc, onCloseFunc);

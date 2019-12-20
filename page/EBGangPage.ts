@@ -3,13 +3,10 @@
 */
 module gameebgang.page {
 	export class EBGangPage extends game.gui.base.Page {
-		private _viewUI: ui.nqp.game_ui.ebgang.EBGang_HUDUI;
+		private _viewUI: ui.ajqp.game_ui.ebgang.EBGang_HUDUI;
 		private _player: any;
 		private _playerInfo: any;
 		private _ebgMgr: EBGangMgr;
-		private _difenClipList: ClipUtil[] = [];
-		private _leastClipList: ClipUtil[] = [];
-		private _clipArr: any[] = [ClipUtil.HUD_FONT0, ClipUtil.HUD_FONT1, ClipUtil.HUD_FONT2, ClipUtil.HUD_FONT3];
 
 		constructor(v: Game, onOpenFunc?: Function, onCloseFunc?: Function) {
 			super(v, onOpenFunc, onCloseFunc);
@@ -20,10 +17,8 @@ module gameebgang.page {
 				PathGameTongyong.atlas_game_ui_tongyong + "hud.atlas",
 				PathGameTongyong.atlas_game_ui_tongyong + "dating.atlas",
 				PathGameTongyong.atlas_game_ui_tongyong + "logo.atlas",
-				Path_game_ebgang.ui_ebgang + "sk/ebg_0.png",
-				Path_game_ebgang.ui_ebgang + "sk/ebg_1.png",
-				Path_game_ebgang.ui_ebgang + "sk/ebg_2.png",
-				Path_game_ebgang.ui_ebgang + "sk/ebg_3.png",
+				PathGameTongyong.atlas_game_ui_tongyong_general + "anniu.atlas",
+				PathGameTongyong.atlas_game_ui_tongyong_general_effect + "anniug.atlas",
 			];
 			this._isNeedDuang = false;
 		}
@@ -39,23 +34,6 @@ module gameebgang.page {
 			for (let index = 0; index < this._viewUI.box_right.numChildren; index++) {
 				this._viewUI.box_right._childs[index].visible = false;
 			}
-			for (let index = 0; index < 4; index++) {
-				if (!this._difenClipList[index]) {
-					this._difenClipList[index] = new ClipUtil(this._clipArr[index]);
-					this._difenClipList[index].x = this._viewUI["txt_difen" + index].x;
-					this._difenClipList[index].y = this._viewUI["txt_difen" + index].y;
-					this._viewUI["txt_difen" + index].parent && this._viewUI["txt_difen" + index].parent.addChild(this._difenClipList[index]);
-					this._viewUI["txt_difen" + index].removeSelf();
-				}
-				if (!this._leastClipList[index]) {
-					this._leastClipList[index] = new ClipUtil(this._clipArr[index]);
-					this._leastClipList[index].x = this._viewUI["txt_least" + index].x;
-					this._leastClipList[index].y = this._viewUI["txt_least" + index].y;
-					this._leastClipList[index].scale(0.8, 0.8);
-					this._viewUI["txt_least" + index].parent && this._viewUI["txt_least" + index].parent.addChild(this._leastClipList[index]);
-					this._viewUI["txt_least" + index].removeSelf();
-				}
-			}
 		}
 
 		// 页面打开时执行函数
@@ -68,11 +46,10 @@ module gameebgang.page {
 			for (let index = 0; index < this._viewUI.box_right.numChildren; index++) {
 				this._viewUI.box_right._childs[index].visible = true;
 				Laya.Tween.from(this._viewUI.box_right._childs[index], {
-					right: -300
+					x: 1280
 				}, this._initialtime + index * this._time, Laya.Ease.linearNone);
 			}
 			Laya.timer.once(this._initialtime + 4 * this._time, this, this.onComplete)
-			this._viewUI.btn_join.on(LEvent.CLICK, this, this.onBtnClickWithTween);
 		}
 
 		private _initialtime: number = 200;
@@ -104,14 +81,6 @@ module gameebgang.page {
 					if (this.chkPlayerNotEnoughMoney(3)) return;
 					this._game.sceneObjectMgr.intoStory(EbgangPageDef.GAME_NAME, Web_operation_fields.GAME_ROOM_CONFIG_EBGANG_4.toString());
 					break;
-				// case this._viewUI.btn_join:
-				// 	let maplv = TongyongUtil.getJoinMapLv(EbgangPageDef.GAME_NAME, this._playerInfo.money);
-				// 	if (!maplv) {
-				// 		this.showTipsBox(EBGangMgr.LEAST_JOIN_MONEY[0]);
-				// 		return;
-				// 	}
-				// 	this._game.sceneObjectMgr.intoStory(EbgangPageDef.GAME_NAME, maplv.toString());
-				// 	break;
 				default:
 					break;
 			}
@@ -125,11 +94,11 @@ module gameebgang.page {
 		}
 
 		private initPlayerInfo(): void {
-			for (let index = 0; index < this._difenClipList.length; index++) {
-				this._difenClipList[index] && this._difenClipList[index].setText(EBGangMgr.LEAST_BET_MONEY[index], true);
+			for (let index = 0; index < EBGangMgr.LEAST_BET_MONEY.length; index++) {
+				this._viewUI["txt_difen" + index].text = EBGangMgr.LEAST_BET_MONEY[index] + "";
 			}
-			for (let index = 0; index < this._leastClipList.length; index++) {
-				this._leastClipList[index] && this._leastClipList[index].setText(EBGangMgr.LEAST_JOIN_MONEY[index], true);
+			for (let index = 0; index < EBGangMgr.LEAST_JOIN_MONEY.length; index++) {
+				this._viewUI["txt_least" + index].text = EBGangMgr.LEAST_JOIN_MONEY[index] + "";
 			}
 		}
 
@@ -148,9 +117,8 @@ module gameebgang.page {
 				this._viewUI.img_room1.off(LEvent.CLICK, this, this.onBtnClickWithTween);
 				this._viewUI.img_room2.off(LEvent.CLICK, this, this.onBtnClickWithTween);
 				this._viewUI.img_room3.off(LEvent.CLICK, this, this.onBtnClickWithTween);
-				this._viewUI.btn_join.off(LEvent.CLICK, this, this.onBtnClickWithTween);
+				this._game.stopMusic();
 			}
-			this._game.stopMusic();
 
 			super.close();
 		}

@@ -3,7 +3,7 @@
 */
 module gameebgang.page {
     export class EBGangSettle extends game.gui.base.Page {
-        private _viewUI: ui.nqp.game_ui.ebgang.JieSuanUI;
+        private _viewUI: ui.ajqp.game_ui.ebgang.JieSuanUI;
         private _isGameEnd: boolean = false;  //是否结束
         private _ebgStory: EbgangStory;
         private _ebgMgr: EBGangMgr;
@@ -11,9 +11,9 @@ module gameebgang.page {
         constructor(v: Game, onOpenFunc?: Function, onCloseFunc?: Function) {
             super(v, onOpenFunc, onCloseFunc);
             this._isNeedBlack = true;
-            this._isClickBlack = true;
+            this._isClickBlack = false;
             this._asset = [
-                PathGameTongyong.atlas_game_ui_tongyong+ "general.atlas",
+                PathGameTongyong.atlas_game_ui_tongyong + "general.atlas",
             ];
         }
 
@@ -31,7 +31,9 @@ module gameebgang.page {
             this._viewUI.list_settle.itemRender = this.createChildren("game_ui.tongyong.JieSuanRenderUI", ListRecordItem);
             this._viewUI.list_settle.renderHandler = new Handler(this, this.renderHandler);
             this._viewUI.list_settle.dataSource = this.dataSource[3];
-            this._isGameEnd = this.dataSource[0] + 1 == this.dataSource[4];
+            this._isGameEnd = this.dataSource[0] + 1 == this.dataSource[4] || this.dataSource[1];//本轮局数已满或者提前结束
+            this._endTime = this._isGameEnd ? this._game.sync.serverTimeBys + 6 : this._game.sync.serverTimeBys + 4;
+            this._isClickBlack = this._isGameEnd;//结束了可以点击空白处关闭
             this.setGameEndBtnState(this._isGameEnd);
             this._ebgStory = this._game.sceneObjectMgr.story as EbgangStory;
             this._ebgMgr = this._ebgStory.ebgMgr;
@@ -39,7 +41,6 @@ module gameebgang.page {
 
         // 设置最后结束时的按纽状态
         private setGameEndBtnState(isEventOn) {
-            this._viewUI.lab_xinxi.visible = !this._isGameEnd;
             this._viewUI.btn_continue.visible = false;
             // this._viewUI.btn_continue.visible = this._isGameEnd;
             // let state = this._game.sceneObjectMgr.mapInfo.GetMapState();
@@ -77,18 +78,20 @@ module gameebgang.page {
         }
 
         //倒计时
-        private _endTime = this._game.sync.serverTimeBys + 5;
+        private _endTime = 0;
         deltaUpdate(): void {
             let curTime = this._game.sync.serverTimeBys;
-            let time = Math.floor(this._endTime - curTime) + 1;
+            let time = Math.floor(this._endTime - curTime);
             if (time > 0) {
-                let str = this.dataSource[1] ? "有玩家余额不足，本轮游戏结束" : time + "S后开始第" + (this.dataSource[0] + 2) + "局，本轮共" + this.dataSource[4] + "局";
+                let str = ""
+                if (this._isGameEnd) {
+                    str = "本轮" + this.dataSource[4] + "局游戏已经结束," + time + "s后关闭界面";
+                } else {
+                    str = this.dataSource[1] ? "有玩家余额不足，本轮游戏结束" : time + "s后开始第" + (this.dataSource[0] + 2) + "局，本轮共" + this.dataSource[4] + "局";
+                }
                 this._viewUI.lab_xinxi.text = str;
             } else {
-                this._isClickBlack = true;
-                // 最后一局不自动关闭
-                if (!this._isGameEnd)
-                    this.close();
+                this.close();
             }
         }
 
@@ -110,12 +113,12 @@ module gameebgang.page {
             this.lab_point.text = this._data.point;
             this.lab_multiple.text = String(this._data.betmultiple);
             this.lab_money.text = this._data.money;
-            // this.lab_bankermultiple.text = this._data.isbanker ? this._data.bankermultiple : "0";
-            // this.lab_cardtype.text = this._data.cardtype;
             this.lab_name.color = this._data.isMain ? TeaStyle.COLOR_JIESUAN : "#ffffff";
             this.lab_point.color = this._data.isMain ? TeaStyle.COLOR_JIESUAN : "#ffffff";
             this.lab_multiple.color = this._data.isMain ? TeaStyle.COLOR_JIESUAN : "#ffffff";
             this.lab_money.color = parseFloat(this._data.money) >= 0 ? TeaStyle.COLOR_GREEN : TeaStyle.COLOR_RED;
+            // this.lab_bankermultiple.text = this._data.isbanker ? this._data.bankermultiple : "0";
+            // this.lab_cardtype.text = this._data.cardtype;
             // this.lab_bankermultiple.color = this._data.isMain ? TeaStyle.COLOR_JIESUAN : "#ffffff";
             // this.lab_cardtype.color = this._data.isMain ? TeaStyle.COLOR_JIESUAN : "#ffffff";
         }

@@ -3,25 +3,25 @@
 */
 module gameebgang.story {
 	const enum MAP_STATUS {
-        MAP_STATE_NONE = 0, 	//初始化
-        MAP_STATE_CARDROOM_CREATED = 1, 	//房卡等人中
-        MAP_STATE_CARDROOM_WAIT = 2,		//房卡等人中
-        MAP_STATE_SHUFFLE = 3,		//洗牌中
-        MAP_STATE_DEAL = 4,		//准备发牌
-        MAP_STATE_BANKER = 5,		//准备开始抢庄
-        MAP_STATE_SET_BANKER = 6,		//抢庄定庄动画
-        MAP_STATE_BET = 7,		//准备下注
-        MAP_STATE_AFTER_BET = 8,		//准备下注
-        MAP_STATE_CHOOSE_SHOW_CARDS = 9,		//选择开牌顺序
-        MAP_STATE_SORT_SHOW_CARDS = 10,	//摆牌
-        MAP_STATE_BEFORE_SHOW_CARDS = 11,	//准备开牌
-        MAP_STATE_SHOW_CARDS = 12,	//开牌
-        MAP_STATE_COMPARE = 13,	//准备比牌
-        MAP_STATE_SETTLE = 14,	//准备结算
-        MAP_STATE_SETTLEING = 15,	//结算中
-        MAP_STATE_WAIT = 16,	//等待下一局开始
-        MAP_STATE_END = 17,	//结束
-    }
+		MAP_STATE_NONE = 0, 	//初始化
+		MAP_STATE_CARDROOM_CREATED = 1, 	//房卡等人中
+		MAP_STATE_CARDROOM_WAIT = 2,		//房卡等人中
+		MAP_STATE_SHUFFLE = 3,		//洗牌中
+		MAP_STATE_DEAL = 4,		//准备发牌
+		MAP_STATE_BANKER = 5,		//准备开始抢庄
+		MAP_STATE_SET_BANKER = 6,		//抢庄定庄动画
+		MAP_STATE_BET = 7,		//准备下注
+		MAP_STATE_AFTER_BET = 8,		//准备下注
+		MAP_STATE_CHOOSE_SHOW_CARDS = 9,		//选择开牌顺序
+		MAP_STATE_SORT_SHOW_CARDS = 10,	//摆牌
+		MAP_STATE_BEFORE_SHOW_CARDS = 11,	//准备开牌
+		MAP_STATE_SHOW_CARDS = 12,	//开牌
+		MAP_STATE_COMPARE = 13,	//准备比牌
+		MAP_STATE_SETTLE = 14,	//准备结算
+		MAP_STATE_SETTLEING = 15,	//结算中
+		MAP_STATE_WAIT = 16,	//等待下一局开始
+		MAP_STATE_END = 17,	//结束
+	}
 	export class EbgangStory extends gamecomponent.story.StoryNormalBase {
 		private _ebgMgr: EBGangMgr;
 		private _cardsTemp: any = [];
@@ -93,7 +93,7 @@ module gameebgang.story {
 			if (!mainUnit.GetIndex()) return;
 			let state = mapinfo.GetMapState();
 			switch (state) {
-				case MAP_STATUS.MAP_STATE_SORT_SHOW_CARDS://摆牌,准备开牌
+				case MAP_STATUS.MAP_STATE_SORT_SHOW_CARDS://摆牌,准备发牌
 					if (this._isSortCard) return;
 					this.updateCardsCount();
 					let handle = new Handler(this, this._ebgMgr.createObj);
@@ -129,11 +129,10 @@ module gameebgang.story {
 			if (!mainUnit.GetIndex()) return;
 			if (!this.isReConnected) return;
 			let state = mapinfo.GetMapState();
-			if (state > MAP_STATUS.MAP_STATE_NONE && state < MAP_STATUS.MAP_STATE_END) {
-				if (this._isDealCard) return;
-				if (state > MAP_STATUS.MAP_STATE_SORT_SHOW_CARDS) {
-					this._isDealCard = true;
-				}
+			if (this._isDealCard) return;
+			if (state >= MAP_STATUS.MAP_STATE_BEFORE_SHOW_CARDS) {
+				this.reDealCards();
+				this._isDealCard = true;
 			}
 		}
 

@@ -9,16 +9,14 @@ module gameebgang {
         public static ADD_MONEY_FONT: any;
         //扣钱飘字
         public static SUB_MONEY_FONT: any;
-        //底分数字初级
-        public static HUD_FONT0: any;
-        //底分数字小资
-        public static HUD_FONT1: any;
-        //底分数字老板
-        public static HUD_FONT2: any;
-        //底分数字富豪
-        public static HUD_FONT3: any;
+        //底分准入通用白字
+        public static WHITE_FONT: any;
         //倍数文字
         public static BEI_FONT: any;
+        //下注倍数飘字
+        public static BET_CLIP_FONT: any;
+        //抢庄倍数飘字
+        public static BANKER_CLIP_FONT: any;
 
         static init(): void {
             this.MONEY_FONT2 = {
@@ -50,54 +48,44 @@ module gameebgang {
                 space: -8
             };
 
-            //底分数字初级
-            this.HUD_FONT0 = {
-                source: PathGameTongyong.atlas_game_ui_tongyong + "general.atlas",
-                url: PathGameTongyong.ui_tongyong_dating + 'clip_dizhu0.png',
-                clipWidth: 22,
-                clipHeight: 27,
-                clipX: 10,
-                space: -5
-            };
-
-            //底分数字小资
-            this.HUD_FONT1 = {
-                source: PathGameTongyong.atlas_game_ui_tongyong + "general.atlas",
-                url: PathGameTongyong.ui_tongyong_dating + 'clip_dizhu1.png',
-                clipWidth: 22,
-                clipHeight: 27,
-                clipX: 10,
-                space: -5
-            };
-
-            //底分数字老板
-            this.HUD_FONT2 = {
-                source: PathGameTongyong.atlas_game_ui_tongyong + "general.atlas",
-                url: PathGameTongyong.ui_tongyong_dating + 'clip_dizhu2.png',
-                clipWidth: 22,
-                clipHeight: 27,
-                clipX: 10,
-                space: -5
-            };
-
-            //底分数字富豪
-            this.HUD_FONT3 = {
-                source: PathGameTongyong.atlas_game_ui_tongyong + "general.atlas",
-                url: PathGameTongyong.ui_tongyong_dating + 'clip_dizhu3.png',
-                clipWidth: 22,
-                clipHeight: 27,
-                clipX: 10,
-                space: -5
+            //底分准入通用白字
+            this.WHITE_FONT = {
+                source: PathGameTongyong.atlas_game_ui_tongyong + "hud.atlas",
+                url: PathGameTongyong.ui_tongyong_hud + 'clip_sz.png',
+                clipWidth: 17,
+                clipHeight: 23,
+                clipX: 11,
+                space: -4
             };
 
             //倍数
             this.BEI_FONT = {
                 source: PathGameTongyong.atlas_game_ui_tongyong + "general.atlas",
                 url: PathGameTongyong.ui_tongyong_general + 'clip_bs.png',
-                clipWidth: 32,
-                clipHeight: 41,
+                clipWidth: 18,
+                clipHeight: 31,
                 clipX: 10,
-                space: -18
+                space: 0
+            };
+
+            //下注倍数飘字
+            this.BET_CLIP_FONT = {
+                source: Path_game_ebgang.atlas_game_ui_ebgang_effect + "qp.atlas",
+                url: Path_game_ebgang.ui_ebgang + "effect/qp/clip_sz.png",
+                clipWidth: 30,
+                clipHeight: 30,
+                clipX: 10,
+                space: -10
+            };
+
+            //抢庄倍数飘字
+            this.BANKER_CLIP_FONT = {
+                source: Path_game_ebgang.atlas_game_ui_ebgang_effect + "qp.atlas",
+                url: Path_game_ebgang.ui_ebgang + "effect/qp/clip_sz1.png",
+                clipWidth: 16,
+                clipHeight: 20,
+                clipX: 10,
+                space: -2
             };
         }
         private _clip: ClipCell;
@@ -276,7 +264,7 @@ module gameebgang {
                 for (let i = 0; i < len; i++) {
                     let clip = this._clipArray[i];
                     let indexStr: string = this._txtStr.charAt(i).toString();
-                    let index = (indexStr == ".") ? 10 : parseInt(indexStr);
+                    let index = (indexStr == "-") ? 11 : (indexStr == ".") ? 10 : parseInt(indexStr);
                     if (!clip) {
                         clip = this.createClip(index);
                         this._container.addChild(clip);

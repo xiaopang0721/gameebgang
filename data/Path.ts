@@ -6,5 +6,6 @@ module gameebgang.data {
 		static readonly music_ebgang: string = 'music/ebgang/';
 		static readonly ui_ebgang: string = "ebgang_ui/game_ui/ebgang/";
 		static readonly atlas_game_ui: string = "ebgang_res/atlas/ebgang_ui/game_ui/";
+		static readonly atlas_game_ui_ebgang_effect: string = "ebgang_res/atlas/ebgang_ui/game_ui/ebgang/effect/";
 	}
 }
