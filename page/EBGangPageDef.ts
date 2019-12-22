@@ -10,6 +10,7 @@ module gameebgang.page {
 		static PAGE_EBG_SETTLEMENT: string = "4";	// 结算页
 		static PAGE_EBG_TONGSHA: string = "5";	// 庄家通杀
 		static PAGE_EBG_TONGPEI: string = "6";	// 庄家通赔
+		static PAGE_EBG_WIN: string = "7";	// 你赢了
 		static PAGE_EBG_RULE: string = "101";	// 规则
 
 		static myinit(str: string) {
@@ -22,6 +23,7 @@ module gameebgang.page {
 			PageDef._pageClassMap[EbgangPageDef.PAGE_EBG_SETTLEMENT] = EBGangSettle;
 			PageDef._pageClassMap[EbgangPageDef.PAGE_EBG_TONGSHA] = EbgangTongShaPage;
 			PageDef._pageClassMap[EbgangPageDef.PAGE_EBG_TONGPEI] = EbgangTongPeiPage;
+			PageDef._pageClassMap[EbgangPageDef.PAGE_EBG_WIN] = EbgangWinPage;
 
 
 			this["__needLoadAsset"] = [
@@ -64,6 +66,7 @@ module gameebgang.page {
 					Path_game_ebgang.music_ebgang + "start.mp3",
 					Path_game_ebgang.music_ebgang + "suijizhuangjia.mp3",
 					Path_game_ebgang.music_ebgang + "chouma.mp3",
+					Path_game_ebgang.music_ebgang + "zjtongchi.mp3",
 				]);
 			}
 		}

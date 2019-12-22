@@ -4,7 +4,7 @@
 module gameebgang.data {
 	export class EBGangData extends gamecomponent.object.PlayingMahjong {
 		private _b: boolean;
-		private _posTemp = [[580, 615, 70], [1040, 320, 70], [610, 80, 70], [170, 320, 70]];
+		private _posTemp = [[575, 635, 70], [1040, 341, 70], [615, 102, 70], [170, 340, 70]];
 		private _mainPlayerIndex: number;
 		public _ownerIdx;	//牌的归属座位
 		myOwner(v: Unit, b: boolean, index: number, seat: number) {

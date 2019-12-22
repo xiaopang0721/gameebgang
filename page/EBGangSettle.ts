@@ -4,7 +4,8 @@
 module gameebgang.page {
     export class EBGangSettle extends game.gui.base.Page {
         private _viewUI: ui.ajqp.game_ui.ebgang.JieSuanUI;
-        private _isGameEnd: boolean = false;  //是否结束
+        private _isGameOver: boolean = false;  //是否结束
+        private _isEarlyOver: boolean = false;  //是否提前结束
         private _ebgStory: EbgangStory;
         private _ebgMgr: EBGangMgr;
 
@@ -31,10 +32,11 @@ module gameebgang.page {
             this._viewUI.list_settle.itemRender = this.createChildren("game_ui.tongyong.JieSuanRenderUI", ListRecordItem);
             this._viewUI.list_settle.renderHandler = new Handler(this, this.renderHandler);
             this._viewUI.list_settle.dataSource = this.dataSource[3];
-            this._isGameEnd = this.dataSource[0] + 1 == this.dataSource[4] || this.dataSource[1];//本轮局数已满或者提前结束
-            this._endTime = this._isGameEnd ? this._game.sync.serverTimeBys + 6 : this._game.sync.serverTimeBys + 4;
-            this._isClickBlack = this._isGameEnd;//结束了可以点击空白处关闭
-            this.setGameEndBtnState(this._isGameEnd);
+            this._isGameOver = this.dataSource[0] + 1 == this.dataSource[4];//本轮局数已满
+            this._isEarlyOver = this.dataSource[1];//提前结束
+            this._endTime = this._isGameOver || this._isEarlyOver ? this._game.sync.serverTimeBys + 6 : this._game.sync.serverTimeBys + 4;
+            this._isClickBlack = this._isGameOver;//结束了可以点击空白处关闭
+            this.setGameEndBtnState(this._isGameOver);
             this._ebgStory = this._game.sceneObjectMgr.story as EbgangStory;
             this._ebgMgr = this._ebgStory.ebgMgr;
         }
@@ -67,7 +69,7 @@ module gameebgang.page {
         }
 
         protected onBlackSpriteClick() {
-            if (!this._isGameEnd) return;
+            if (!this._isGameOver) return;
             super.onBlackSpriteClick();
         }
 
@@ -83,11 +85,13 @@ module gameebgang.page {
             let curTime = this._game.sync.serverTimeBys;
             let time = Math.floor(this._endTime - curTime);
             if (time > 0) {
-                let str = ""
-                if (this._isGameEnd) {
-                    str = "本轮" + this.dataSource[4] + "局游戏已经结束," + time + "s后关闭界面";
+                let str = "";
+                if (this._isGameOver) {
+                    str = "本轮" + this.dataSource[4] + "局游戏已经结束，" + time + "s后关闭界面";
+                } else if (this._isEarlyOver) {
+                    str = "有玩家余额不足，本轮游戏结束，" + time + "s后关闭界面";
                 } else {
-                    str = this.dataSource[1] ? "有玩家余额不足，本轮游戏结束" : time + "s后开始第" + (this.dataSource[0] + 2) + "局，本轮共" + this.dataSource[4] + "局";
+                    str = time + "s后开始第" + (this.dataSource[0] + 2) + "局，本轮共" + this.dataSource[4] + "局";
                 }
                 this._viewUI.lab_xinxi.text = str;
             } else {
