@@ -35,7 +35,8 @@ module gameebgang.page {
             this._isGameOver = this.dataSource[0] + 1 == this.dataSource[4];//本轮局数已满
             this._isEarlyOver = this.dataSource[1];//提前结束
             this._endTime = this._isGameOver || this._isEarlyOver ? this._game.sync.serverTimeBys + 6 : this._game.sync.serverTimeBys + 4;
-            this._isClickBlack = this._isGameOver;//结束了可以点击空白处关闭
+            this._viewUI.btn_close.visible = this._isGameOver || this._isEarlyOver;//结束了出现关闭按钮
+            this._isClickBlack = this._isGameOver || this._isEarlyOver;//结束了可以点击空白处关闭
             this.setGameEndBtnState(this._isGameOver);
             this._ebgStory = this._game.sceneObjectMgr.story as EbgangStory;
             this._ebgMgr = this._ebgStory.ebgMgr;

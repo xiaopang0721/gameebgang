@@ -41,7 +41,7 @@ module gameebgang.data {
 			super.sendChip();
 		}
 
-		backFlyChip(index: number, isClear: boolean) {
+		backFlyChip(index: number, isClear: boolean, game: Game) {
 			if (!this.pos) {
 				this.pos = new Vector2(this._chipStart[this._startIndex][0], this._chipStart[this._startIndex][1]);
 			}
@@ -54,10 +54,7 @@ module gameebgang.data {
 			this.targe_pos.y = this._chipStart[index][1];
 			this.isCanClear = isClear;
 			if(!this.pos) return;
-			Laya.Tween.to(this.pos, { x: this.targe_pos.x, y: this.targe_pos.y }, 700, Laya.Ease.backIn, Handler.create(this, () => {
-				this.isUIShow = false;
-				this.isFinalPos = true;
-			}));
+			super.flyChipBase(700, game);
 		}
 
 		drawChip() {

@@ -263,6 +263,7 @@ module gameebgang.page {
             this._viewUI.view_dice.ani1.gotoAndStop(2);
             this._viewUI.box_cards.visible = false;
             this._viewUI.ani_first.visible = false;
+            this._viewUI.box_room_left.visible = false;
 
             for (let i = 0; i < 4; i++) {
                 this._viewUI["view_head" + i].img_banker.visible = false;
@@ -294,6 +295,7 @@ module gameebgang.page {
             this.setUITextRound(this._curState >= MAP_STATUS.MAP_STATE_CARDROOM_WAIT);
             this.hideBankerTips(this._curState);
             this._isPlaying = this._curState >= MAP_STATUS.MAP_STATE_SHUFFLE && this._curState < MAP_STATUS.MAP_STATE_END;
+            this._viewUI.box_tips.visible = this._curState == MAP_STATUS.MAP_STATE_BANKER || this._curState == MAP_STATUS.MAP_STATE_BET;
             switch (this._curState) {
                 case MAP_STATUS.MAP_STATE_NONE:
                     this._pageHandle.pushClose({ id: EbgangPageDef.PAGE_EBG_SETTLEMENT, parent: this._game.uiRoot.general });
@@ -331,46 +333,37 @@ module gameebgang.page {
                 case MAP_STATUS.MAP_STATE_SETTLEING:
                     this.setCardRecord();
                     this.showCardCountList();
-                    this.addBankerWinEff();
-                    Laya.timer.once(1000, this, () => {
-                        this.addBankerLoseEff();
-                        this.addMoneyClip(this._bankerMoneyChange, this._bankerIdx);
+                    let isTongSha = this._settleWinInfo.length <= 0;
+                    let isTongPei = this._settleLoseInfo.length <= 0;
+                    let time_delay = isTongPei || isTongSha ? 1000 : 0;//飘筹码延迟
+                    let fly_delay = isTongSha || isTongPei ? 2700 : 1700;//飘字延迟
+                    if (isTongSha) {//庄家通杀
+                        this._game.playSound(Path_game_ebgang.music_ebgang + "zjtongchi.mp3", false);
+                        this._pageHandle.pushOpen({ id: TongyongPageDef.PAGE_TONGYONG_ZJTS, parent: this._game.uiRoot.HUD });
+                    } else if (isTongPei) {//庄家通赔
+                        // this._game.playSound(Path_game_ebgang.music_ebgang + "zjtongpei.mp3", false);Z
+                        this._pageHandle.pushOpen({ id: TongyongPageDef.PAGE_TONGYONG_ZJTP, parent: this._game.uiRoot.HUD });
+                    }
+                    //结算飘筹码
+                    Laya.timer.once(time_delay, this, () => {
+                        this.showSettleEff();
                     });
-
-                    Laya.timer.once(2000, this, () => {
-                        if (this._settleWinInfo.length <= 0) {//庄家通杀
-                            this._game.playSound(Path_game_ebgang.music_ebgang + "zjtongchi.mp3", false);
-                            this._pageHandle.pushOpen({ id: EbgangPageDef.PAGE_EBG_TONGSHA, parent: this._game.uiRoot.HUD });
-                        } else if (this._settleLoseInfo.length <= 0) {//庄家通赔
-                            // this._game.playSound(Path_game_ebgang.music_ebgang + "zjtongpei.mp3", false);Z
-                            this._pageHandle.pushOpen({ id: EbgangPageDef.PAGE_EBG_TONGPEI, parent: this._game.uiRoot.HUD });
-                        } else {
-                            if (this._moneyChange >= 0) {
-                                let rand = MathU.randomRange(1, 3);
-                                this._game.playSound(StringU.substitute(PathGameTongyong.music_tongyong + "win{0}.mp3", rand), true);
-                                this._pageHandle.pushOpen({ id: EbgangPageDef.PAGE_EBG_WIN, parent: this._game.uiRoot.HUD });
-                            }
+                    //胜利动画
+                    Laya.timer.once(fly_delay, this, () => {
+                        if (this._moneyChange >= 0) { //再播你赢了
+                            this._pageHandle.pushOpen({ id: TongyongPageDef.PAGE_TONGYONG_GAMEWIN, parent: this._game.uiRoot.HUD });
+                            let musicType = MathU.randomRange(1, 3);
+                            this._game.playSound(PathGameTongyong.music_tongyong + MUSIC_PATH.winMusic + musicType + ".mp3", true);
+                        } else { //再播你输了
+                            let musicType = MathU.randomRange(1, 4);
+                            this._game.playSound(PathGameTongyong.music_tongyong + MUSIC_PATH.loseMusic + musicType + ".mp3", true);
                         }
                         this._pageHandle.updatePageHandle();//更新额外界面的开关状态
                         this._pageHandle.reset();//清空额外界面存储数组
                     });
-                    if (this._settleWinInfo.length <= 0 || this._settleLoseInfo.length <= 0) { //庄家通杀或通赔后
-                        Laya.timer.once(3500, this, () => {
-                            if (this._moneyChange >= 0) { //再播你赢了
-                                this._pageHandle.pushOpen({ id: EbgangPageDef.PAGE_EBG_WIN, parent: this._game.uiRoot.HUD });
-                                let musicType = MathU.randomRange(1, 3);
-                                this._game.playSound(PathGameTongyong.music_tongyong + MUSIC_PATH.winMusic + musicType + ".mp3", true);
-                            } else { //再播你输了
-                                let musicType = MathU.randomRange(1, 4);
-                                this._game.playSound(PathGameTongyong.music_tongyong + MUSIC_PATH.loseMusic + musicType + ".mp3", true);
-                            }
-                            this._pageHandle.updatePageHandle();//更新额外界面的开关状态
-                            this._pageHandle.reset();//清空额外界面存储数组
-                        });
-                    }
                     break;
                 case MAP_STATUS.MAP_STATE_WAIT:
-                    this._pageHandle.pushClose({ id: EbgangPageDef.PAGE_EBG_WIN, parent: this._game.uiRoot.HUD });
+                    this._pageHandle.pushClose({ id: TongyongPageDef.PAGE_TONGYONG_GAMEWIN, parent: this._game.uiRoot.HUD });
                     this.onUpdateUnit();
                     //传数据，打开单局结算界面
                     this.openSettlePage();
@@ -378,7 +371,7 @@ module gameebgang.page {
                     this._EBGangMgr.resetData();
                     break;
                 case MAP_STATUS.MAP_STATE_END:
-                    this._pageHandle.pushClose({ id: EbgangPageDef.PAGE_EBG_WIN, parent: this._game.uiRoot.HUD });
+                    this._pageHandle.pushClose({ id: TongyongPageDef.PAGE_TONGYONG_GAMEWIN, parent: this._game.uiRoot.HUD });
                     //传数据，打开单局结算界面
                     this.openSettlePage();
                     this.setGameEnd();
@@ -393,6 +386,7 @@ module gameebgang.page {
 
         // 房间信息
         private setUITextRound(isVisible) {
+            this._viewUI.box_room_left.visible = isVisible;
             this._viewUI.text_info.visible = isVisible;
             this._viewUI.text_roomtype.visible = isVisible;
             this._viewUI.text_round.visible = isVisible;
@@ -439,8 +433,9 @@ module gameebgang.page {
             }
             //下注按钮的倍数
             this._viewUI.box_bet.visible = false;
-            this._viewUI.txt_tip.text = "请等待其他玩家下注";
-            this._viewUI.box_tip.visible = true;
+            this._viewUI.txt_tips.text = "请等待其他玩家下注";
+            this._viewUI.bg_tips.width = 350;
+            this._viewUI.box_tips.visible = true;
             let val = this._betRate[index - 1];
             this._game.network.call_ebgang_bet(val);
         }
@@ -479,16 +474,19 @@ module gameebgang.page {
                         viewHead.qifu_type.skin = this._qifuTypeImgUrl;
                         this.playTween(viewHead.qifu_type, qifu_index);
                     }
-                    //时间戳变化 才加上祈福标志
-                    if (TongyongUtil.getIsHaveQiFu(unit, this._game.sync.serverTimeBys)) {
-                        if (qifu_index && posIdx == qifu_index) {
-                            Laya.timer.once(2500, this, () => {
-                                viewHead.img_qifu.visible = true;
-                                viewHead.img_icon.skin = TongyongUtil.getHeadUrl(unit.GetHeadImg(), 2);
-                            })
-                        }
-                    } else {
-                        viewHead.img_qifu.visible = false;
+                    //祈福成功 头像上就有动画
+                    if (qifu_index && posIdx == qifu_index) {
+                        viewHead.qifu_type.visible = true;
+                        viewHead.qifu_type.skin = this._qifuTypeImgUrl;
+                        //时间戳变化 才加上祈福标志
+                        this.playTween(viewHead.qifu_type, qifu_index);
+                        Laya.timer.once(2500, this, () => {
+                            viewHead.img_qifu.visible = true;
+                            viewHead.img_icon.skin = TongyongUtil.getHeadUrl(unit.GetHeadImg(), 2);
+                        })
+                    }
+                    else {
+                        viewHead.img_qifu.visible = TongyongUtil.getIsHaveQiFu(unit, this._game.sync.serverTimeBys);
                         viewHead.img_icon.skin = TongyongUtil.getHeadUrl(unit.GetHeadImg(), 2);
                     }
                 }
@@ -608,6 +606,9 @@ module gameebgang.page {
                             this._game.playSound(Path_game_ebgang.music_ebgang + MUSIC_PATH.musicBanker, false);
                             this._bankerIdx = unit.GetIndex();
                             this._bankerBet = unit.GetLzNum();
+                            if (this._viewUI["box_opt" + index].box_buqiang.visible) {
+                                this.setBankerNum(this._viewUI["box_opt" + index], this._bankerBet);
+                            }
                         } else {
                             this._viewUI["view_head" + index].img_banker.visible = false;
                             //清除非庄家的抢庄气泡                    
@@ -651,9 +652,9 @@ module gameebgang.page {
         private setBankerButtonState(state) {
             if (this._viewUI.box_banker.visible) {
                 this.resetBankerButton(false);
-                this._viewUI.txt_tip.text = "请选择本局能承受的最大赔付倍数进行抢庄!";
+                this._viewUI.txt_tips.text = "请选择本局能承受的最大赔付倍数进行抢庄";
+                this._viewUI.bg_tips.width = 550;
                 this._bankerRate = BANKER_RATE_DEFAULT;
-                this._viewUI.box_tip.visible = true;
                 let _max_banker_num: number = this.getMaxBankerNumByUnit(this._game.sceneObjectMgr.mainUnit);
                 this._viewUI.btn_banker1.visible = _max_banker_num >= EBGangMgr.MIN_BANKER_NUM;
                 this._bankerClip1.setText(this._bankerRate[1].toString(), true, false, "", Path_game_ebgang.ui_ebgang + "tu_bqz1.png");
@@ -683,11 +684,11 @@ module gameebgang.page {
         private setBetButtonState(state, mainUnit) {
             // 庄家就不显示下注了
             let isBetState: boolean = state == MAP_STATUS.MAP_STATE_BET;
-            this._viewUI.box_tip.visible = isBetState;
             let isBanker: boolean = mainUnit.GetIdentity() == 1;
             this._viewUI.box_bet.visible = !isBanker;
             this._viewUI.box_opt0.visible = isBanker;
-            this._viewUI.txt_tip.text = !isBanker ? "请选择下注倍数" : "请等待其他玩家下注";
+            this._viewUI.txt_tips.text = !isBanker ? "请选择下注倍数" : "请等待其他玩家下注";
+            this._viewUI.bg_tips.width = 350;
             if (isBetState) {
                 this.resetBetButtonX(false);
                 if (!this._viewUI.box_bet.visible) return;
@@ -755,8 +756,6 @@ module gameebgang.page {
             let isChooseShowCard: boolean = state == MAP_STATUS.MAP_STATE_CHOOSE_SHOW_CARDS;
             this._viewUI.view_dice.visible = isChooseShowCard;
             if (isChooseShowCard) {
-                this._viewUI.box_tip.visible = false;
-                this._viewUI.txt_tip.text = "";
                 this._viewUI.view_dice.img_dice1.skin = this._ui_tongyong_effect_shanzi.replace("%s", this._showCardDice1.toString());
                 this._viewUI.view_dice.img_dice2.skin = this._ui_tongyong_effect_shanzi.replace("%s", this._showCardDice2.toString());
                 this._viewUI.view_dice.ani1.play(1, false);
@@ -980,8 +979,6 @@ module gameebgang.page {
                                 if (idx == mainIdx) {
                                     this.setBankerNum(this._viewUI.box_opt0, info.BetVal);
                                     this._viewUI.box_banker.visible = false;
-                                    this._viewUI.box_tip.visible = false;
-                                    this._viewUI.txt_tip.text = "";
                                 } else {//其他玩家
                                     this.setBankerNum(this._viewUI["box_opt" + posIdx], info.BetVal);
                                     this._viewUI["view_think" + posIdx].visible = false;
@@ -1067,22 +1064,26 @@ module gameebgang.page {
 
         //设置抢庄倍数
         private _bankerClipList: any[] = [];
-        private setBankerNum(view: any, val: number): void {
+        private setBankerNum(view: any, val: number, isplay: boolean = true): void {
+            val = this._curState == MAP_STATUS.MAP_STATE_BANKER ? val : this._bankerBet;
             view.visible = true;
             view.box_bet.visible = false;
             view.box_qiang.visible = val > 0;
             view.box_buqiang.visible = !view.box_qiang.visible;
-            view.ani1.play(0, false);
-            let clip_money = new EbgangClip(EbgangClip.BANKER_CLIP_FONT);
-            clip_money.setText(Math.abs(val), true);
-            // let scaleX_clip = val >= 100 ? 1 : val >= 10 ? 1.2 : 1.5;
-            // let scaleY_clip = val >= 100 ? 1 : val >= 10 ? 1.2 : 1.5;
-            // clip_money.scale(scaleX_clip, scaleY_clip);
-            clip_money.centerX = view.banker_clip.centerX;
-            clip_money.centerY = view.banker_clip.centerY;
-            view.banker_clip.parent.addChild(clip_money);
-            this._bankerClipList.push(clip_money);
-            view.banker_clip.visible = false;
+            if (view.box_qiang.visible) {
+                let clip_money = new EbgangClip(EbgangClip.BANKER_CLIP_FONT);
+                clip_money.setText(Math.abs(val), true);
+                clip_money.centerX = view.banker_clip.centerX;
+                clip_money.centerY = view.banker_clip.centerY;
+                view.banker_clip.parent.addChild(clip_money);
+                this._bankerClipList.push(clip_money);
+                view.banker_clip.visible = false;
+                if (isplay && this._curState <= MAP_STATUS.MAP_STATE_SET_BANKER) {
+                    view.ani1.play(0, false);
+                } else {
+                    view.ani1.gotoAndStop(27);
+                }
+            }
         }
 
         //设置下注倍数
@@ -1092,7 +1093,6 @@ module gameebgang.page {
             view.box_bet.visible = true;
             view.box_qiang.visible = false;
             view.box_buqiang.visible = false;
-            view.ani1.play(0, false);
             let clip_money = new EbgangClip(EbgangClip.BET_CLIP_FONT);
             clip_money.setText(Math.abs(val), true);
             clip_money.scale(0.85, 0.85);
@@ -1101,6 +1101,11 @@ module gameebgang.page {
             view.bet_clip.parent.addChild(clip_money);
             this._clipList.push(clip_money);
             view.bet_clip.visible = false;
+            if (this._curState == MAP_STATUS.MAP_STATE_BET) {
+                view.ani1.play(0, false);
+            } else {
+                view.ani1.gotoAndStop(27);
+            }
         }
 
         //判断下是不是有人钱不够了
@@ -1148,7 +1153,7 @@ module gameebgang.page {
                 for (let i = 0; i < _unitChips.length; i++) {
                     let chip: EBGangChip = _unitChips[i];
                     if (chip) {
-                        chip.backFlyChip(tarPos, true);
+                        chip.backFlyChip(tarPos, true, this._game);
                     }
                 }
             }
@@ -1217,6 +1222,15 @@ module gameebgang.page {
             this._imgdiList = [];
         }
 
+        //结算表现
+        private showSettleEff(): void {
+            this.addBankerWinEff();
+            Laya.timer.once(1000, this, () => {
+                this.addBankerLoseEff();
+                this.addMoneyClip(this._bankerMoneyChange, this._bankerIdx);
+            });
+        }
+
         //庄家赢钱
         private addBankerWinEff(): void {
             // EBGangMapPage.MONEY_NUM * EBGangMapPage.MONEY_FLY_TIME;
@@ -1253,7 +1267,6 @@ module gameebgang.page {
                 let index = i * 2;
                 let unitPos = this.getUIUnitIndex(this._settleWinInfo[index]);
                 if (i < this._settleWinInfo.length / 2) {
-                    // this.addMoneyFly(bankerPos, unitPos);   
                     this.addChipFly(unitPos, unitPos);
                     this.addMoneyClip(this._settleWinInfo[index + 1], this._settleWinInfo[index]);
                 }
@@ -1570,22 +1583,30 @@ module gameebgang.page {
                 case this._viewUI.btn_banker1://抢庄倍率1
                     this._game.network.call_ebgang_banker(this._bankerRate[1]);
                     this._viewUI.box_banker.visible = false;
-                    this._viewUI.txt_tip.text = "请等待其他玩家抢庄";
+                    this._viewUI.box_tips.visible = true;
+                    this._viewUI.txt_tips.text = "请等待其他玩家抢庄";
+                    this._viewUI.bg_tips.width = 350;
                     break;
                 case this._viewUI.btn_banker2://抢庄倍率2
                     this._game.network.call_ebgang_banker(this._bankerRate[2]);
                     this._viewUI.box_banker.visible = false;
-                    this._viewUI.txt_tip.text = "请等待其他玩家抢庄";
+                    this._viewUI.box_tips.visible = true;
+                    this._viewUI.txt_tips.text = "请等待其他玩家抢庄";
+                    this._viewUI.bg_tips.width = 350;
                     break;
                 case this._viewUI.btn_banker3://抢庄倍率3
                     this._game.network.call_ebgang_banker(this._bankerRate[3]);
                     this._viewUI.box_banker.visible = false;
-                    this._viewUI.txt_tip.text = "请等待其他玩家抢庄";
+                    this._viewUI.box_tips.visible = true;
+                    this._viewUI.txt_tips.text = "请等待其他玩家抢庄";
+                    this._viewUI.bg_tips.width = 350;
                     break;
                 case this._viewUI.btn_banker4://抢庄倍率4
                     this._game.network.call_ebgang_banker(this._bankerRate[4]);
                     this._viewUI.box_banker.visible = false;
-                    this._viewUI.txt_tip.text = "请等待其他玩家抢庄";
+                    this._viewUI.box_tips.visible = true;
+                    this._viewUI.txt_tips.text = "请等待其他玩家抢庄";
+                    this._viewUI.bg_tips.width = 350;
                     break;
                 case this._viewUI.btn_menu://菜单
                     this.menuTween(!this._viewUI.img_menu.visible);
