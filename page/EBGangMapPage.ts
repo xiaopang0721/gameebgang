@@ -185,26 +185,26 @@ module gameebgang.page {
         }
 
         //倍数
-        private _beiClip1: ClipUtil;
-        private _beiClip2: ClipUtil;
-        private _beiClip3: ClipUtil;
-        private _beiClip4: ClipUtil;
-        private _beiClip5: ClipUtil;
+        private _beiClip1: EbgangClip;
+        private _beiClip2: EbgangClip;
+        private _beiClip3: EbgangClip;
+        private _beiClip4: EbgangClip;
+        private _beiClip5: EbgangClip;
         //抢庄倍数
-        private _bankerClip1: ClipUtil;
-        private _bankerClip2: ClipUtil;
-        private _bankerClip3: ClipUtil;
-        private _bankerClip4: ClipUtil;
+        private _bankerClip1: EbgangClip;
+        private _bankerClip2: EbgangClip;
+        private _bankerClip3: EbgangClip;
+        private _bankerClip4: EbgangClip;
         initBeiClip(): void {
             for (let i = 1; i < 6; i++) {
-                this["_beiClip" + i] = new ClipUtil(ClipUtil.BEI_FONT);
+                this["_beiClip" + i] = new EbgangClip(EbgangClip.BEI_FONT);
                 this["_beiClip" + i].centerX = this._viewUI["clip_bei" + i].centerX;
                 this["_beiClip" + i].centerY = this._viewUI["clip_bei" + i].centerY;
                 this._viewUI["clip_bei" + i].parent.addChild(this["_beiClip" + i]);
                 this._viewUI["clip_bei" + i].visible = false;
             }
             for (let i = 1; i < 5; i++) {
-                this["_bankerClip" + i] = new ClipUtil(ClipUtil.BEI_FONT);
+                this["_bankerClip" + i] = new EbgangClip(EbgangClip.BEI_FONT);
                 this["_bankerClip" + i].centerX = this._viewUI["clip_banker" + i].centerX;
                 this["_bankerClip" + i].centerY = this._viewUI["clip_banker" + i].centerY;
                 this._viewUI["clip_banker" + i].parent.addChild(this["_bankerClip" + i]);
@@ -433,9 +433,6 @@ module gameebgang.page {
             }
             //下注按钮的倍数
             this._viewUI.box_bet.visible = false;
-            this._viewUI.txt_tips.text = "请等待其他玩家下注";
-            this._viewUI.bg_tips.width = 350;
-            this._viewUI.box_tips.visible = true;
             let val = this._betRate[index - 1];
             this._game.network.call_ebgang_bet(val);
         }
@@ -905,6 +902,10 @@ module gameebgang.page {
             return skin;
         }
 
+        //已选择抢庄倍数的人数
+        private _battleBankerNum: number = 0;
+        //已选择下注倍数的人数
+        private _battleBetNum: number = 0;
         //战斗日志
         private updateBattledInfo(): void {
             let mainUnit = this._game.sceneObjectMgr.mainUnit;
@@ -976,9 +977,17 @@ module gameebgang.page {
                             if (unit) {
                                 let posIdx = this.getUIUnitIndex(idx);
                                 //玩家自己
+                                this._battleBankerNum++;
                                 if (idx == mainIdx) {
                                     this.setBankerNum(this._viewUI.box_opt0, info.BetVal);
                                     this._viewUI.box_banker.visible = false;
+                                    if (this._battleBankerNum == this.getUnitCount()) {
+                                        this._viewUI.box_tips.visible = false;
+                                    } else {
+                                        this._viewUI.box_tips.visible = true;
+                                        this._viewUI.txt_tips.text = "请等待其他玩家抢庄";
+                                        this._viewUI.bg_tips.width = 350;
+                                    }
                                 } else {//其他玩家
                                     this.setBankerNum(this._viewUI["box_opt" + posIdx], info.BetVal);
                                     this._viewUI["view_think" + posIdx].visible = false;
@@ -1001,10 +1010,18 @@ module gameebgang.page {
                             let startIdx: number = 0;
                             if (unit.GetIdentity() == 0) this._unitBets[idx] = val;
                             if (unit) {
+                                this._battleBetNum++;
                                 //玩家自己
                                 if (idx == mainIdx) {
                                     this.setBetNum(this._viewUI.box_opt0, val);
                                     this._viewUI.box_bet.visible = false;
+                                    if (this._battleBetNum == this.getUnitCount() - 1) {
+                                        this._viewUI.box_tips.visible = false;
+                                    } else {
+                                        this._viewUI.box_tips.visible = true;
+                                        this._viewUI.txt_tips.text = "请等待其他玩家下注";
+                                        this._viewUI.bg_tips.width = 350;
+                                    }
                                 } else {
                                     let posIdx = this.getUIUnitIndex(idx);
                                     startIdx = posIdx;
@@ -1174,7 +1191,7 @@ module gameebgang.page {
             playerIcon.img_di.visible = false;
             //飘字
             clip_money.setText(Math.abs(value), true, false, preSkin);
-            clip_money.centerX = playerIcon.clip_money.centerX;
+            clip_money.centerX = playerIcon.clip_money.centerX - 4;
             clip_money.centerY = playerIcon.clip_money.centerY;
             playerIcon.clip_money.parent.addChild(clip_money);
             this._clipList.push(clip_money);
@@ -1183,7 +1200,7 @@ module gameebgang.page {
             playerIcon.box_clip.y = 57;
             playerIcon.box_clip.visible = true;
             Laya.Tween.clearAll(playerIcon.box_clip);
-            Laya.Tween.to(playerIcon.box_clip, { y: playerIcon.box_clip.y - 50 }, 1000);
+            Laya.Tween.to(playerIcon.box_clip, { y: playerIcon.box_clip.y - 55 }, 700);
             //赢钱动画
             playerIcon.effWin.visible = value > 0;
             value > 0 && playerIcon.effWin.ani1.play(0, false);
@@ -1356,6 +1373,8 @@ module gameebgang.page {
         private resetData(): void {
             this.resetRoundData();
             this._battleIndex = -1;
+            this._battleBankerNum = 0;
+            this._battleBetNum = 0;
             this._showCardCountList = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
             this._totalPoint = [0, 0, 0, 0, 0];
         }
@@ -1583,30 +1602,18 @@ module gameebgang.page {
                 case this._viewUI.btn_banker1://抢庄倍率1
                     this._game.network.call_ebgang_banker(this._bankerRate[1]);
                     this._viewUI.box_banker.visible = false;
-                    this._viewUI.box_tips.visible = true;
-                    this._viewUI.txt_tips.text = "请等待其他玩家抢庄";
-                    this._viewUI.bg_tips.width = 350;
                     break;
                 case this._viewUI.btn_banker2://抢庄倍率2
                     this._game.network.call_ebgang_banker(this._bankerRate[2]);
                     this._viewUI.box_banker.visible = false;
-                    this._viewUI.box_tips.visible = true;
-                    this._viewUI.txt_tips.text = "请等待其他玩家抢庄";
-                    this._viewUI.bg_tips.width = 350;
                     break;
                 case this._viewUI.btn_banker3://抢庄倍率3
                     this._game.network.call_ebgang_banker(this._bankerRate[3]);
                     this._viewUI.box_banker.visible = false;
-                    this._viewUI.box_tips.visible = true;
-                    this._viewUI.txt_tips.text = "请等待其他玩家抢庄";
-                    this._viewUI.bg_tips.width = 350;
                     break;
                 case this._viewUI.btn_banker4://抢庄倍率4
                     this._game.network.call_ebgang_banker(this._bankerRate[4]);
                     this._viewUI.box_banker.visible = false;
-                    this._viewUI.box_tips.visible = true;
-                    this._viewUI.txt_tips.text = "请等待其他玩家抢庄";
-                    this._viewUI.bg_tips.width = 350;
                     break;
                 case this._viewUI.btn_menu://菜单
                     this.menuTween(!this._viewUI.img_menu.visible);
