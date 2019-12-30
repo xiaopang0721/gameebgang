@@ -172,12 +172,12 @@ module gameebgang.page {
                 //全面屏
                 if (this._game.isFullScreen) {
                     this._viewUI.box_top_left.left = 14 + 56;
-                    this._viewUI.box_room_left.left = 105 + 56;
+                    this._viewUI.box_room_left.left = 115 + 56;
                     this._viewUI.box_top_right.right = 28 + 56;
                     this._viewUI.box_bottom_right.right = 12 + 56;
                 } else {
                     this._viewUI.box_top_left.left = 14;
-                    this._viewUI.box_room_left.left = 105;
+                    this._viewUI.box_room_left.left = 115;
                     this._viewUI.box_top_right.right = 28;
                     this._viewUI.box_bottom_right.right = 12;
                 }
@@ -460,7 +460,7 @@ module gameebgang.page {
                         }
                     }
                     viewHead.txt_name.text = getMainPlayerName(unit.GetName());
-                    viewHead.txt_money.text = EnumToString.getPointBackNum(unit.GetMoney(), 2);
+                    viewHead.txt_money.text = EnumToString.getPointBackNum(TongyongUtil.getMoneyChange(unit.GetMoney()), 2);
                     //头像框
                     viewHead.img_txk.skin = TongyongUtil.getTouXiangKuangUrl(unit.GetHeadKuangImg());
                     viewHead.img_vip.visible = unit.GetVipLevel() > 0;
@@ -557,7 +557,7 @@ module gameebgang.page {
                     this._viewUI.view_head0.img_vip.visible = mPlayer.playerInfo.vip_level > 0;
                     this._viewUI.view_head0.img_vip.skin = TongyongUtil.getVipUrl(mPlayer.playerInfo.vip_level);
                 } else {
-                    money = unitOffline.GetMoney();
+                    money = TongyongUtil.getMoneyChange(unitOffline.GetMoney());
                     this._viewUI.view_head0.txt_name.text = getMainPlayerName(unitOffline.GetName());
                     this._viewUI.view_head0.img_icon.skin = TongyongUtil.getHeadUrl(unitOffline.GetHeadImg(), 2);
                     this._viewUI.view_head0.img_qifu.visible = TongyongUtil.getIsHaveQiFu(unitOffline, this._game.sync.serverTimeBys);
@@ -627,7 +627,7 @@ module gameebgang.page {
         // 根据精灵对象得到最大抢庄倍数
         private getMaxBankerNumByUnit(unit): number {
             if (!unit) return 0;
-            let _max_banker_num: number = Math.floor(unit.GetMoney() / EBGangMgr.ROOM_CONFIG[this._EBGangStory.mapLv]);
+            let _max_banker_num: number = Math.floor(TongyongUtil.getMoneyChange(unit.GetMoney()) / EBGangMgr.ROOM_CONFIG[this._EBGangStory.mapLv]);
             if (_max_banker_num > EBGangMgr.MAX_BANKER_NUM) {
                 _max_banker_num = EBGangMgr.MAX_BANKER_NUM;
             }
@@ -638,7 +638,7 @@ module gameebgang.page {
         private getMaxBetNumByUnit(unit): number {
             if (!unit) return 0;
             let _max_bet_num: number = Math.floor(this._bankerBet / (this._EBGangMgr.totalUnitCount - 1));
-            let _self_max_bet_num: number = Math.floor(unit.GetMoney() / EBGangMgr.ROOM_CONFIG[this._EBGangStory.mapLv]);
+            let _self_max_bet_num: number = Math.floor(TongyongUtil.getMoneyChange(unit.GetMoney()) / EBGangMgr.ROOM_CONFIG[this._EBGangStory.mapLv]);
             if (_self_max_bet_num > _max_bet_num) {
                 _self_max_bet_num = _max_bet_num;
             }
@@ -1131,7 +1131,7 @@ module gameebgang.page {
             for (let i = 1; i <= EBGangMgr.MAX_SEATS_COUNT; i++) {
                 let unit = this._game.sceneObjectMgr.getUnitByIdx(i);
                 if (unit) {
-                    if (unit.GetMoney() < EBGangMgr.ROOM_JOIN_CONFIG[this._EBGangStory.mapLv]) {
+                    if (TongyongUtil.getMoneyChange(unit.GetMoney()) < EBGangMgr.ROOM_JOIN_CONFIG[this._EBGangStory.mapLv]) {
                         flag = true;
                         break;
                     }
@@ -1440,7 +1440,7 @@ module gameebgang.page {
                         point: point,
                         betmultiple: betNum ? betNum : Math.abs(bankerNum),
                         money: this.GetDoubleFloat(Number(money)),
-                        totalPoint: unit.GetMoney(),
+                        totalPoint: TongyongUtil.getMoneyChange(unit.GetMoney()),
                     }
                     temps.push(obj);
                 }
