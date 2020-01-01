@@ -315,6 +315,7 @@ module gameebgang.page {
                     this.setRandomBanker();
                     break;
                 case MAP_STATUS.MAP_STATE_BET:
+                    Laya.timer.clear(this, this.randBanker);
                     this.setBetButtonState(this._curState, mainUnit);
                     for (let i: number = 1; i < 4; i++) {
                         this._viewUI["view_think" + i].visible = i != this.getUIUnitIndex(this._bankerIdx);
@@ -583,6 +584,7 @@ module gameebgang.page {
         private _diff_ran: number = 100;
         private randBanker() {
             if (!this._game.mainScene || !this._game.mainScene.camera) return;
+            if (!this._bankerTemp.length) return;
             if (this._curIndex >= this._bankerTemp.length) {
                 this._curIndex = 0;
             }
