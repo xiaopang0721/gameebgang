@@ -21,7 +21,6 @@ module gameebgang.page {
 
 
 			this["__needLoadAsset"] = [
-				DatingPath.atlas_dating_ui + "qifu.atlas",
                 Path_game_ebgang.atlas_game_ui + "ebgang.atlas",
                 Path_game_ebgang.atlas_game_ui_ebgang_effect + "nyl.atlas",
                 Path_game_ebgang.atlas_game_ui_ebgang_effect + "qp.atlas",

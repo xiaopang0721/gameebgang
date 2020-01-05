@@ -41,7 +41,7 @@ module gameebgang.data {
 			super.sendChip();
 		}
 
-		backFlyChip(index: number, isClear: boolean, game: Game) {
+		backFlyChip(index: number, isclear: boolean, game: Game) {
 			if (!this.pos) {
 				this.pos = new Vector2(this._chipStart[this._startIndex][0], this._chipStart[this._startIndex][1]);
 			}
@@ -52,9 +52,8 @@ module gameebgang.data {
 			this.isFinalPos = false;
 			this.targe_pos.x = this._chipStart[index][0];
 			this.targe_pos.y = this._chipStart[index][1];
-			this.isCanClear = isClear;
-			if(!this.pos) return;
-			super.flyChipBase(700, game);
+			if (!this.pos) return;
+			super.danRenFlyChipBase(500, game, isclear);
 		}
 
 		drawChip() {
